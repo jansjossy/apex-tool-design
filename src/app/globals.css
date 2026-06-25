@@ -2,25 +2,147 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --color-primary: #005A9C;
+  --color-primary-light: #38bdf8;
+  --color-accent: #f97316;
+  --color-industrial-50: #f8fafc;
+  --color-industrial-100: #f1f5f9;
+  --color-industrial-200: #e2e8f0;
+  --color-industrial-300: #cbd5e1;
+  --color-industrial-400: #94a3b8;
+  --color-industrial-500: #64748b;
+  --color-industrial-600: #475569;
+  --color-industrial-700: #334155;
+  --color-industrial-800: #1e293b;
+  --color-industrial-900: #0f172a;
+
+  --font-technical: var(--font-share-tech-mono), monospace;
+  --font-authoritative: var(--font-lora), serif;
+  --font-sans: var(--font-outfit), sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* CAD Grid Background */
+.cad-grid-bg {
+  background-size: 40px 40px, 40px 40px, 10px 10px, 10px 10px;
+  background-image: 
+    linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+    linear-gradient(to right, rgba(148, 163, 184, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
+  background-color: var(--background);
+}
+
+@media (max-width: 640px) {
+  .cad-grid-bg {
+    background-size: 20px 20px, 20px 20px, 10px 10px, 10px 10px;
   }
+}
+
+/* Security Watermark Overlay */
+.watermark-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0.015; /* Extremely subtle */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Ctext x='150' y='150' fill='%230f172a' font-family='monospace' font-weight='bold' font-size='7' transform='rotate(-45 150 150)' text-anchor='middle'%3EAPEX TOOL DESIGN • SECURED SECURE WORKSPACE • DO NOT DUPLICATE%3C/text%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Technical target corners / crosshairs */
+.tech-corner-tl::before, .tech-corner-tl::after,
+.tech-corner-tr::before, .tech-corner-tr::after,
+.tech-corner-bl::before, .tech-corner-bl::after,
+.tech-corner-br::before, .tech-corner-br::after {
+  content: '';
+  position: absolute;
+  background-color: var(--color-industrial-300);
+}
+
+.tech-corner-tl::before { top: 0; left: 0; width: 12px; height: 1px; }
+.tech-corner-tl::after { top: 0; left: 0; width: 1px; height: 12px; }
+
+.tech-corner-tr::before { top: 0; right: 0; width: 12px; height: 1px; }
+.tech-corner-tr::after { top: 0; right: 0; width: 1px; height: 12px; }
+
+.tech-corner-bl::before { bottom: 0; left: 0; width: 12px; height: 1px; }
+.tech-corner-bl::after { bottom: 0; left: 0; width: 1px; height: 12px; }
+
+.tech-corner-br::before { bottom: 0; right: 0; width: 12px; height: 1px; }
+.tech-corner-br::after { bottom: 0; right: 0; width: 1px; height: 12px; }
+
+/* Custom technical card hover grids */
+.tech-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--color-industrial-200);
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.tech-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 20px -2px rgba(0, 90, 156, 0.1);
+  background-color: rgba(255, 255, 255, 0.98);
+  transform: translateY(-2px);
+}
+
+.tech-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  background-size: 15px 15px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 90, 156, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 90, 156, 0.03) 1px, transparent 1px);
+}
+
+.tech-card:hover::after {
+  opacity: 1;
+}
+
+/* CAD Crosshair Overlay */
+.cad-crosshair-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.cad-crosshair-h, .cad-crosshair-v {
+  position: absolute;
+  pointer-events: none;
+  background-color: var(--color-primary);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.cad-crosshair-h {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.cad-crosshair-v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.cad-crosshair-container:hover .cad-crosshair-h,
+.cad-crosshair-container:hover .cad-crosshair-v {
+  opacity: 0.35;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

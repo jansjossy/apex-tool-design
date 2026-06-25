@@ -1,0 +1,94 @@
+{
+  "header": {
+    "title": "APEX TOOL DESIGN",
+    "version": "2026.6.25",
+    "scale": "1:1",
+    "status": "SYSTEM_ACTIVE"
+  },
+  "hero": {
+    "name": "Apex Tool Design",
+    "tagline": "Precision in Every Design",
+    "subtitle": "Premium Mould & Product Design Services",
+    "leadDesigner": "Ditty Thomas — Freelance Mould & Product Designer",
+    "ref": "APX_DSGN_2026",
+    "est": "2012"
+  },
+  "profile": {
+    "title": "Professional Profile",
+    "dwgNo": "APX-PRFL-001",
+    "date": "2026-06-25",
+    "location": "Kottayam, Kerala, India",
+    "highlights": [
+      "Experienced freelance mould designer with expertise in injection moulds, runner and gate systems, cooling layouts, and product development.",
+      "Strong background in automotive, PVC, electrical, and industrial mould design.",
+      "Expertise in manufacturing drawings, tolerance analysis, and mould estimation.",
+      "Expert user of Siemens Unigraphics NX, SolidWorks, and AutoCAD.",
+      "Based in Kottayam, Kerala, India, providing worldwide engineering design support."
+    ]
+  },
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "PVC / Multi-Cavity Mould Design",
+      "client": "Designed for EXCEL PLAST",
+      "description": "Designed complex runner, gate, and slide mechanisms for multi-cavity PVC fittings. Achieved optimal thermal flow and minimum cycle times through customized cooling layout in Siemens NX.",
+      "image": "/assets/pvc_multi_cavity_mould.png",
+      "scale": "1:2.5",
+      "dwg": "CADVIEWER_V1.2_PVC_MOULD.dwg",
+      "tag": "PVC / MULTI-CAV"
+    },
+    {
+      "id": "proj-2",
+      "title": "High-Speed Precision Mould Design",
+      "client": "Designed for High-Tolerance Application",
+      "description": "Constructed core-pull and slide mechanisms using SolidWorks. Designed and analyzed tolerance stack-up and cooling layouts to meet high precision automotive parts specifications.",
+      "image": "/assets/precision_mould.png",
+      "scale": "1:1",
+      "dwg": "CADVIEWER_V1.2_PRECISION_MOULD.dwg",
+      "tag": "PRECISION"
+    }
+  ],
+  "services": [
+    {
+      "code": "SRV-IMD // 01",
+      "title": "Injection Mould Design",
+      "description": "Complete layout designs for injection moulds, structural calculations, and mechanical assembly structures."
+    },
+    {
+      "code": "SRV-PDS // 02",
+      "title": "Product Development Support",
+      "description": "CAD modeling support from initial napkin sketch to DFM (Design for Manufacturing) ready parts."
+    },
+    {
+      "code": "SRV-RGO // 03",
+      "title": "Runner & Gate Optimization",
+      "description": "Calculations for sprue sizes, hot/cold runner paths, and gate positioning to optimize injection cycle parameters."
+    },
+    {
+      "code": "SRV-CSL // 04",
+      "title": "Cooling System Layout",
+      "description": "Thermal balancing design, baffles, bubblers, and conforming lines optimization for cooling."
+    },
+    {
+      "code": "SRV-CPM // 05",
+      "title": "Core Pull & Slider Mechanisms",
+      "description": "Complex tooling layout calculations for splits, slider angles, angle pins, hydraulic pulls, and lifters."
+    },
+    {
+      "code": "SRV-2DD // 06",
+      "title": "2D Manufacturing Drawings",
+      "description": "Clean 2D drafting with rigorous tolerance standards, detailed sections, annotations, and complete BOM lists."
+    },
+    {
+      "code": "SRV-MTS // 07-08",
+      "title": "Design Modification & Troubleshooting",
+      "description": "Defective mould troubleshooting, flashing issues resolution, cooling improvements, and direct engineering contract support."
+    }
+  ],
+  "contact": {
+    "title": "Let's build your next tool together",
+    "description": "Submit your product concepts, rough sketches, or modification briefs. We deliver manufacturing-ready assemblies and 2D detail sheets globally.",
+    "email": "dittythomas@gmail.com",
+    "location": "Kottayam, Kerala, India"
+  }
+}

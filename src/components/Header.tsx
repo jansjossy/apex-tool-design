@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Terminal, Settings } from "lucide-react";
+import { Menu, X, Settings } from "lucide-react";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,31 +34,11 @@ export default function Header() {
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center space-x-2.5 group">
-            <svg
-              className="w-6 h-6 text-primary transition-transform group-hover:scale-105 duration-300"
-              viewBox="0 0 100 100"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <polygon
-                points="50,15 15,75 50,60 85,75"
-                stroke="currentColor"
-                strokeWidth="6"
-                fill="currentColor"
-                fillOpacity="0.1"
-                strokeLinejoin="round"
-              />
-              <line
-                x1="50"
-                y1="15"
-                x2="50"
-                y2="60"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeDasharray="3 3"
-              />
-              <circle cx="50" cy="15" r="4" fill="currentColor" />
-            </svg>
+            <img 
+              src="/apexdesign.jpeg" 
+              alt="Apex Tool Design Logo" 
+              className="w-8 h-8 object-contain transition-transform group-hover:scale-105 duration-300" 
+            />
             <span className="font-technical text-sm font-black tracking-wider text-industrial-900">
               APEX TOOL DESIGN
             </span>
@@ -98,7 +78,6 @@ export default function Header() {
           isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
-        {/* Backdrop */}
         <div
           onClick={() => setIsMenuOpen(false)}
           className={`absolute inset-0 bg-industrial-900/30 backdrop-blur-sm transition-opacity duration-300 ${
@@ -106,7 +85,6 @@ export default function Header() {
           }`}
         ></div>
 
-        {/* Panel */}
         <div
           className={`absolute right-0 top-0 bottom-0 w-80 max-w-full bg-white border-l border-industrial-200 p-6 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
             isMenuOpen ? "translate-x-0" : "translate-x-full"
@@ -150,7 +128,6 @@ export default function Header() {
                 );
               })}
 
-              {/* Admin Panel Link */}
               <div className="pt-6 border-t border-industrial-100 mt-6">
                 <Link
                   href="/admin"

@@ -3,13 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { Terminal, Lock, Save, Plus, Trash2, LogOut, CheckCircle, Database } from "lucide-react";
 import { fetchPortfolioData, updatePortfolioData, verifyAdminPassword } from "./actions";
-import { PortfolioData, Project, Service } from "@/lib/db";
+import { PortfolioData, Project, Service, getAboutData, saveAboutData } from "@/lib/db";
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [data, setData] = useState<PortfolioData | null>(null);
+  const [aboutText, setAboutText] = useState(""); // <-- New State for About Page
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [isFirebaseConfigured, setIsFirebaseConfigured] = useState(false);
@@ -35,8 +36,12 @@ export default function AdminPage() {
     try {
       const portfolio = await fetchPortfolioData();
       setData(portfolio);
+      
+      // Fetch the about page data
+      const about = await getAboutData();
+      setAboutText(about);
     } catch (error) {
-      console.error("Failed to load portfolio:", error);
+      console.error("Failed to load portfolio or about data:", error);
     }
   };
 
@@ -66,7 +71,9 @@ export default function AdminPage() {
 
     try {
       const success = await updatePortfolioData(data);
-      if (success) {
+      const aboutSuccess = await saveAboutData(aboutText); // <-- Save About Text to Firebase
+
+      if (success && aboutSuccess) {
         setSaveMessage("CONFIGURATION SAVED SUCCESSFULLY");
       } else {
         if (!isFirebaseConfigured) {
@@ -343,6 +350,19 @@ export default function AdminPage() {
               />
             </div>
           </div>
+        </section>
+
+        {/* NEW SECTION: About Page Editor */}
+        <section className="border border-industrial-200 rounded-lg p-5 space-y-4 bg-gray-50">
+          <h3 className="font-technical text-xs font-bold text-primary tracking-widest uppercase border-b border-industrial-100 pb-2">
+            // ABOUT PAGE CONFIGURATION
+          </h3>
+          <textarea
+            value={aboutText}
+            onChange={(e) => setAboutText(e.target.value)}
+            placeholder="Enter the comprehensive About page details here..."
+            className="w-full h-40 p-4 border border-industrial-200 rounded font-sans text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary bg-white"
+          />
         </section>
 
         {/* Section 2: Profile bullets */}

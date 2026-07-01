@@ -121,3 +121,36 @@ export async function savePortfolioData(data: PortfolioData): Promise<boolean> {
   console.warn('Firebase not configured. Save ignored.');
   return false;
 }
+
+export const getAboutData = async () => {
+  if (db) {
+    try {
+      const docRef = doc(db, "content", "about");
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        return docSnap.data().text;
+      } else {
+        return "Default about page content will appear here once saved in the admin dashboard.";
+      }
+    } catch (error) {
+      console.error("Error fetching about data:", error);
+      return "Error loading content.";
+    }
+  }
+  return "Firebase not configured. Error loading content.";
+};
+
+export const saveAboutData = async (text: string): Promise<boolean> => {
+  if (db) {
+    try {
+      const docRef = doc(db, "content", "about");
+      await setDoc(docRef, { text });
+      return true;
+    } catch (error) {
+      console.error("Error saving about data:", error);
+      return false;
+    }
+  }
+  return false;
+};

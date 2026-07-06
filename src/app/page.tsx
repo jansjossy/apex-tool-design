@@ -33,10 +33,7 @@ export default async function Home() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="border border-industrial-300 bg-white/95 p-6 sm:p-10 rounded-lg tech-corner-tl tech-corner-tr tech-corner-bl tech-corner-br relative shadow-md">
             {/* Tech Readout Row */}
-            <div className="flex justify-between items-center pb-4 mb-6 border-b border-industrial-200 font-technical text-[10px] text-industrial-400">
-              <span>REF_NO: {data.hero.ref}</span>
-              <span>EST: {data.hero.est}</span>
-            </div>
+            
 
             {/* Main Hero Header */}
             <span className="font-technical text-xs font-bold tracking-widest text-primary uppercase">

@@ -75,7 +75,7 @@ export default async function Home() {
         <section className="w-full">
           <div className="border border-industrial-200 bg-industrial-50/50 p-6 rounded-lg tech-corner-tl tech-corner-tr tech-corner-bl tech-corner-br relative">
             <div className="font-technical text-[10px] text-industrial-500 tracking-widest uppercase mb-4 text-center">
-              Core CAD/CAM Environment // Certified Tools
+            
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-center justify-center divide-y sm:divide-y-0 sm:divide-x divide-industrial-200">
               {/* Badge 1: Siemens NX */}

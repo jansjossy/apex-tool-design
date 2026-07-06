@@ -75,6 +75,7 @@ export interface Contact {
   title: string;
   description: string;
   email: string;
+  phone: string; // <-- This is the newly added line!
   location: string;
 }
 

@@ -135,7 +135,7 @@ export default async function Home() {
             </h2>
             <div className="space-y-2 text-[11px] font-technical text-industrial-500">
               <p>REVISION_DATE: {data.profile.date}</p>
-              <p>DESIGNER: DITTY THOMAS</p>
+              <p>DESIGNER: APEX Tool</p>
               <p>LOC_CODE: KTM_KL_IN</p>
             </div>
           </div>
@@ -175,9 +175,7 @@ export default async function Home() {
               >
                 <div>
                   <div className="flex justify-between items-start mb-3">
-                    <span className="font-technical text-[9px] text-industrial-400 tracking-wider">
-                      {service.code}
-                    </span>
+                    
                     {getServiceIcon(index)}
                   </div>
                   <h3 className="font-technical text-sm font-bold text-industrial-800 uppercase tracking-tight mb-2">

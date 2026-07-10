@@ -81,12 +81,7 @@ export default async function Home() {
               {/* Badge 1: Siemens NX */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-primary/50 transition-colors shadow-sm mb-2">
-                  <svg className="w-9 h-9" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="42" stroke="#005A9C" stroke-width="6" stroke-dasharray="6 2" className="group-hover:rotate-45 transition-transform duration-1000"></circle>
-                    <path d="M30 30L70 70" stroke="#005A9C" stroke-width="8" stroke-linecap="round"></path>
-                    <path d="M70 30L30 70" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"></path>
-                    <circle cx="50" cy="50" r="16" fill="#005A9C"></circle>
-                  </svg>
+                  <img src="/1.jpeg" alt="Unigraphics NX" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">Unigraphics NX</span>
                 <span className="font-technical text-[9px] text-industrial-400 mt-0.5">Advanced Mould &amp; Assemblies</span>
@@ -95,14 +90,7 @@ export default async function Home() {
               {/* Badge 2: SolidWorks */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-red-500/50 transition-colors shadow-sm mb-2">
-                  <svg className="w-9 h-9" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M50 15L85 35V65L50 85L15 65V35L50 15Z" fill="#DC2626" opacity="0.15"></path>
-                    <path d="M50 15L85 35L50 55L15 35L50 15Z" stroke="#DC2626" stroke-width="5" stroke-linejoin="round"></path>
-                    <path d="M15 35V65L50 85" stroke="#DC2626" stroke-width="5" stroke-linejoin="round"></path>
-                    <path d="M85 35V65L50 85" stroke="#DC2626" stroke-width="5" stroke-linejoin="round"></path>
-                    <path d="M50 55V85" stroke="#B91C1C" stroke-width="4" stroke-linejoin="round"></path>
-                    <circle cx="50" cy="35" r="5" fill="#DC2626"></circle>
-                  </svg>
+                  <img src="/2.jpeg" alt="SolidWorks" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">SolidWorks</span>
                 <span className="font-technical text-[9px] text-industrial-400 mt-0.5">Parametric Product Design</span>
@@ -111,11 +99,7 @@ export default async function Home() {
               {/* Badge 3: AutoCAD */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-amber-600/50 transition-colors shadow-sm mb-2">
-                  <svg className="w-9 h-9" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="15" y="15" width="70" height="70" rx="6" stroke="#d97706" strokeWidth="5" strokeDasharray="4 2" />
-                    <path d="M50 22 L22 78 L35 78 L50 42 L65 78 L78 78 Z" fill="#d97706" />
-                    <line x1="33" y1="58" x2="67" y2="58" stroke="#FFFFFF" strokeWidth="5" />
-                  </svg>
+                  <img src="/3.jpeg" alt="AutoCAD" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">AutoCAD</span>
                 <span className="font-technical text-[9px] text-industrial-400 mt-0.5">2D Detail Sheets &amp; Layouts</span>

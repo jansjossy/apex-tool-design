@@ -176,6 +176,15 @@ export default function AdminPage() {
     setData({ ...data, projects: newProjects });
   };
 
+  // New Contact Handler
+  const handleContactChange = (field: string, val: string) => {
+    if (!data) return;
+    setData({
+      ...data,
+      contact: { ...data.contact, [field]: val },
+    });
+  };
+
   // Login View
   if (!isAuthenticated) {
     return (
@@ -564,6 +573,38 @@ export default function AdminPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Section 5: Contact Info */}
+        <section className="border border-industrial-200 rounded-lg p-5 space-y-4">
+          <h3 className="font-technical text-xs font-bold text-primary tracking-widest uppercase border-b border-industrial-100 pb-2">
+            // 5. CONTACT CONFIGURATION
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-technical text-[10px] text-industrial-500 uppercase mb-1">
+                Email Address
+              </label>
+              <input
+                type="text"
+                value={data.contact.email}
+                onChange={(e) => handleContactChange("email", e.target.value)}
+                className="w-full p-2 border border-industrial-200 rounded font-technical text-xs focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block font-technical text-[10px] text-industrial-500 uppercase mb-1">
+                Mobile Number
+              </label>
+              <input
+                type="text"
+                value={data.contact.phone || ""}
+                onChange={(e) => handleContactChange("phone", e.target.value)}
+                placeholder="+91 XXXXX XXXXX"
+                className="w-full p-2 border border-industrial-200 rounded font-technical text-xs focus:outline-none focus:border-primary"
+              />
+            </div>
           </div>
         </section>
       </main>

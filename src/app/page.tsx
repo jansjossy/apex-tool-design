@@ -81,7 +81,7 @@ export default async function Home() {
               {/* Badge 1: Siemens NX */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-primary/50 transition-colors shadow-sm mb-2">
-                  <img src="/1.jpeg" alt="Unigraphics NX" className="w-10 h-10 object-contain" />
+                  <img src="/assets/1.jpeg" alt="Unigraphics NX" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">Unigraphics NX</span>
                 <span className="font-technical text-[9px] text-industrial-400 mt-0.5">Advanced Mould &amp; Assemblies</span>
@@ -90,7 +90,7 @@ export default async function Home() {
               {/* Badge 2: SolidWorks */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-red-500/50 transition-colors shadow-sm mb-2">
-                  <img src="/2.jpeg" alt="SolidWorks" className="w-10 h-10 object-contain" />
+                  <img src="/assets/2.jpeg" alt="SolidWorks" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">SolidWorks</span>
                 <span className="font-technical text-[9px] text-industrial-400 mt-0.5">Parametric Product Design</span>
@@ -99,7 +99,7 @@ export default async function Home() {
               {/* Badge 3: AutoCAD */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-amber-600/50 transition-colors shadow-sm mb-2">
-                  <img src="/3.jpeg" alt="AutoCAD" className="w-10 h-10 object-contain" />
+                  <img src="/assets/3.jpeg" alt="AutoCAD" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">AutoCAD</span>
                 <span className="font-technical text-[9px] text-industrial-400 mt-0.5">2D Detail Sheets &amp; Layouts</span>

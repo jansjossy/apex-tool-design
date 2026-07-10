@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { Mail, MapPin, Copy, Check, Send, Terminal } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Mail, MapPin, Copy, Check, Send, Terminal, Phone } from "lucide-react";
+import { getPortfolioData, PortfolioData } from "@/lib/db";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -10,10 +11,23 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+  
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
+  const [data, setData] = useState<PortfolioData | null>(null);
 
-  // Set the email address for enquiries
-  const emailAddress = "yourtooldesigner@gmail.com";
+  // Fetch the data when the page loads
+  useEffect(() => {
+    const loadData = async () => {
+      const fetchedData = await getPortfolioData();
+      setData(fetchedData);
+    };
+    loadData();
+  }, []);
+
+  // Set dynamic variables with a fallback if data hasn't loaded yet
+  const emailAddress = data?.contact?.email || "yourtooldesign@gmail.com";
+  const phoneNumber = data?.contact?.phone || "Update number in admin";
 
   const handleCopyEmail = async () => {
     try {
@@ -22,6 +36,16 @@ export default function ContactPage() {
       setTimeout(() => setCopiedEmail(false), 2000);
     } catch (err) {
       console.error("Failed to copy email:", err);
+    }
+  };
+
+  const handleCopyPhone = async () => {
+    try {
+      await navigator.clipboard.writeText(phoneNumber);
+      setCopiedPhone(true);
+      setTimeout(() => setCopiedPhone(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy phone:", err);
     }
   };
 
@@ -62,6 +86,8 @@ export default function ContactPage() {
               Let&apos;s build your next tool together
             </h2>
             <div className="space-y-4 font-technical text-xs">
+              
+              {/* EMAIL BLOCK */}
               <div className="border border-industrial-200 rounded p-4 flex items-center justify-between bg-industrial-50/50">
                 <div className="flex items-center space-x-3">
                   <Mail className="w-5 h-5 text-primary" />
@@ -77,6 +103,24 @@ export default function ContactPage() {
                   {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </div>
+
+              {/* MOBILE BLOCK */}
+              <div className="border border-industrial-200 rounded p-4 flex items-center justify-between bg-industrial-50/50">
+                <div className="flex items-center space-x-3">
+                  <Phone className="w-5 h-5 text-primary" />
+                  <div>
+                    <span className="text-[9px] text-industrial-400 block uppercase">MOBILE_DIRECT:</span>
+                    <span className="font-bold text-industrial-800">{phoneNumber}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={handleCopyPhone}
+                  className="text-industrial-400 hover:text-primary p-1 bg-white border border-industrial-200 rounded transition-colors shadow-sm"
+                >
+                  {copiedPhone ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+
             </div>
           </div>
 

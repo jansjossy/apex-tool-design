@@ -17,7 +17,7 @@ export default async function PortfolioPage() {
             // DRAWING ARCHIVES
           </span>
           <h1 className="font-authoritative text-3xl sm:text-4xl font-extrabold text-industrial-900 tracking-tight mt-1 mb-2">
-            CAD Project Archives
+            FEW OF OUR PROJECTS
           </h1>
           <p className="font-technical text-xs text-industrial-500 uppercase tracking-widest">
             3D CAD Models, Assembly Drawings &amp; Tooling Specifications

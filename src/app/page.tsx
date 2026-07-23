@@ -32,9 +32,6 @@ export default async function Home() {
       <section className="relative w-full border-b border-industrial-200 py-16 sm:py-24 cad-grid-bg">
         <div className="max-w-4xl mx-auto px-4">
           <div className="border border-industrial-300 bg-white/95 p-6 sm:p-10 rounded-lg tech-corner-tl tech-corner-tr tech-corner-bl tech-corner-br relative shadow-md">
-            {/* Tech Readout Row */}
-            
-
             {/* Main Hero Header */}
             <span className="font-technical text-xs font-bold tracking-widest text-primary uppercase">
               // {data.hero.subtitle.toUpperCase()}
@@ -47,7 +44,7 @@ export default async function Home() {
             </p>
 
             <p className="font-sans text-sm text-industrial-600 leading-relaxed max-w-xl mb-8">
-              {data.hero.leadDesigner}. Delivering high-tolerance injection moulds, runner &amp; gate optimizations, and full product drafting solutions globally from {data.profile.location}.
+              {data.hero.leadDesigner}. Delivering high-tolerance injection moulds, runner &amp; gate optimizations, and full product drafting solutions globally from India.
             </p>
 
             {/* CTA Buttons */}
@@ -63,7 +60,7 @@ export default async function Home() {
                 href="/contact"
                 className="font-technical text-xs font-bold tracking-wider border border-industrial-300 hover:border-primary text-industrial-700 hover:text-primary px-5 py-3 rounded transition-colors inline-flex items-center bg-white"
               >
-                REQUEST ESTIMATION
+                REQUEST A QUOTE
               </Link>
             </div>
           </div>
@@ -74,9 +71,6 @@ export default async function Home() {
         {/* 2. SOFTWARE PROFICIENCY BADGES */}
         <section className="w-full">
           <div className="border border-industrial-200 bg-industrial-50/50 p-6 rounded-lg tech-corner-tl tech-corner-tr tech-corner-bl tech-corner-br relative">
-            <div className="font-technical text-[10px] text-industrial-500 tracking-widest uppercase mb-4 text-center">
-            
-            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-center justify-center divide-y sm:divide-y-0 sm:divide-x divide-industrial-200">
               {/* Badge 1: Siemens NX */}
               <div className="flex flex-col items-center p-3 group">
@@ -84,7 +78,7 @@ export default async function Home() {
                   <img src="/assets/1.jpeg" alt="Unigraphics NX" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">Unigraphics NX</span>
-                <span className="font-technical text-[9px] text-industrial-400 mt-0.5">Advanced Mould &amp; Assemblies</span>
+                <span className="font-technical text-[9px] text-industrial-400 mt-0.5">3D modeling and assembly</span>
               </div>
 
               {/* Badge 2: SolidWorks */}
@@ -93,7 +87,7 @@ export default async function Home() {
                   <img src="/assets/2.jpeg" alt="SolidWorks" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">SolidWorks</span>
-                <span className="font-technical text-[9px] text-industrial-400 mt-0.5">Parametric Product Design</span>
+                <span className="font-technical text-[9px] text-industrial-400 mt-0.5">3D modeling and assembly</span>
               </div>
 
               {/* Badge 3: AutoCAD */}
@@ -102,7 +96,7 @@ export default async function Home() {
                   <img src="/assets/3.jpeg" alt="AutoCAD" className="w-10 h-10 object-contain" />
                 </div>
                 <span className="font-technical text-xs text-industrial-800 font-bold tracking-tight">AutoCAD</span>
-                <span className="font-technical text-[9px] text-industrial-400 mt-0.5">2D Detail Sheets &amp; Layouts</span>
+                <span className="font-technical text-[9px] text-industrial-400 mt-0.5">mould design</span>
               </div>
             </div>
           </div>
@@ -119,7 +113,7 @@ export default async function Home() {
             </h2>
             <div className="space-y-2 text-[11px] font-technical text-industrial-500">
               <p>REVISION_DATE: {data.profile.date}</p>
-              <p>DESIGNER: APEX Tool</p>
+              <p>DESIGNER: APEX TOOL</p>
               <p>LOC_CODE: KTM_KL_IN</p>
             </div>
           </div>
@@ -159,7 +153,6 @@ export default async function Home() {
               >
                 <div>
                   <div className="flex justify-between items-start mb-3">
-                    
                     {getServiceIcon(index)}
                   </div>
                   <h3 className="font-technical text-sm font-bold text-industrial-800 uppercase tracking-tight mb-2">
@@ -239,6 +232,51 @@ export default async function Home() {
               </div>
             </div>
           </section>
+        )}
+
+        {/* 6. CLIENT TESTIMONIALS */}
+        {data.testimonials && data.testimonials.length > 0 && (
+          <>
+            <hr className="border-industrial-200" />
+            <section className="space-y-8">
+              <div className="text-center max-w-xl mx-auto">
+                <span className="font-technical text-[10px] text-primary uppercase tracking-widest font-bold">
+                  // CLIENT FEEDBACK
+                </span>
+                <h2 className="font-authoritative text-3xl font-bold text-industrial-900 mt-1">
+                  Testimonials
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {data.testimonials.map((testimony, index) => (
+                  <div
+                    key={testimony.id || index}
+                    className="border border-industrial-200 bg-industrial-50/50 p-6 rounded-lg tech-corner-tl tech-corner-br relative shadow-sm flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="mb-4 text-primary/40">
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                        </svg>
+                      </div>
+                      <p className="font-sans text-sm text-industrial-700 leading-relaxed mb-6 italic">
+                        "{testimony.feedback}"
+                      </p>
+                    </div>
+                    <div className="border-t border-industrial-200 pt-4 mt-auto">
+                      <h4 className="font-technical text-xs font-bold text-industrial-900 uppercase">
+                        {testimony.clientName}
+                      </h4>
+                      <span className="font-technical text-[10px] text-industrial-500 uppercase tracking-widest">
+                        {testimony.company}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </>
         )}
       </main>
     </div>

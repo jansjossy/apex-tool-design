@@ -79,6 +79,13 @@ export interface Contact {
   location: string;
 }
 
+export interface Testimonial {
+  id: string;
+  clientName: string;
+  company: string;
+  feedback: string;
+}
+
 export interface PortfolioData {
   header: Header;
   hero: Hero;
@@ -86,6 +93,7 @@ export interface PortfolioData {
   projects: Project[];
   services: Service[];
   contact: Contact;
+  testimonials: Testimonial[];
 }
 
 export async function getPortfolioData(): Promise<PortfolioData> {

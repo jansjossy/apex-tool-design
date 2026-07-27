@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Terminal, Lock, Save, Plus, Trash2, LogOut, CheckCircle, Database } from "lucide-react";
+import { Lock, Save, Plus, Trash2, LogOut, Database } from "lucide-react";
 import { fetchPortfolioData, updatePortfolioData, verifyAdminPassword } from "./actions";
-import { PortfolioData, Project, Service, Testimonial, getAboutData, saveAboutData } from "@/lib/db";
+import { PortfolioData, Project, Service, Testimonial, getAboutData, saveAboutData, uploadImage } from "@/lib/db";
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,6 +14,7 @@ export default function AdminPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [isFirebaseConfigured, setIsFirebaseConfigured] = useState(false);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const authStatus = sessionStorage.getItem("apex_admin_auth");
@@ -31,10 +32,8 @@ export default function AdminPage() {
   const loadPortfolioData = async () => {
     try {
       const portfolio = await fetchPortfolioData();
-      // Ensure testimonials array exists even if it's missing from DB
       if (!portfolio.testimonials) portfolio.testimonials = [];
       setData(portfolio);
-      
       const about = await getAboutData();
       setAboutText(about);
     } catch (error) {
@@ -74,7 +73,7 @@ export default function AdminPage() {
         setSaveMessage("CONFIGURATION SAVED SUCCESSFULLY");
       } else {
         if (!isFirebaseConfigured) {
-          setSaveMessage("SAVED IN MEMORY (LOCAL FALLBACK MODE - SET FIRESTORE ENVIRONMENT KEYS TO PERSIST REMOTELY)");
+          setSaveMessage("SAVED IN MEMORY (LOCAL FALLBACK MODE)");
         } else {
           setSaveMessage("ERROR SAVING TO DATABASE");
         }
@@ -106,7 +105,7 @@ export default function AdminPage() {
       ...data,
       profile: {
         ...data.profile,
-        highlights: [...data.profile.highlights, "New professional profile highlight bullet"],
+        highlights: [...data.profile.highlights, "New bullet point"],
       },
     });
   };
@@ -128,8 +127,8 @@ export default function AdminPage() {
     if (!data) return;
     const newService: Service = {
       code: `SRV-${String(data.services.length + 1).padStart(3, '0')}`,
-      title: "NEW CAPABILITY TITLE",
-      description: "Enter the details of this engineering capability here."
+      title: "NEW CAPABILITY",
+      description: "Description here."
     };
     setData({ ...data, services: [...data.services, newService] });
   };
@@ -147,17 +146,33 @@ export default function AdminPage() {
     setData({ ...data, projects: newProjects });
   };
 
+  const handleImageUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingIndex(index);
+    const path = `projects/${Date.now()}_${file.name}`;
+    const url = await uploadImage(file, path);
+    
+    if (url) {
+      handleProjectChange(index, "image", url);
+    } else {
+      alert("Upload failed. Please check Firebase Storage settings.");
+    }
+    setUploadingIndex(null);
+  };
+
   const addProject = () => {
     if (!data) return;
     const newProj: Project = {
       id: `proj-${Date.now()}`,
-      title: "NEW PROJECT TITLE",
-      client: "CLIENT NAME / APPLICATION",
-      description: "Enter CAD layout details, structural details, and mechanism analysis here.",
-      image: "/assets/precision_mould.png",
+      title: "NEW PROJECT",
+      client: "CLIENT NAME",
+      description: "Project description.",
+      image: "",
       scale: "1:1",
-      dwg: "CADVIEWER_V1.2_FILENAME.dwg",
-      tag: "PRECISION",
+      dwg: "filename.dwg",
+      tag: "TAG",
     };
     setData({ ...data, projects: [...data.projects, newProj] });
   };
@@ -168,7 +183,6 @@ export default function AdminPage() {
     setData({ ...data, projects: newProjects });
   };
 
-  // NEW TESTIMONIAL HANDLERS
   const handleTestimonialChange = (index: number, field: keyof Testimonial, val: string) => {
     if (!data) return;
     const newTestimonials = [...(data.testimonials || [])];
@@ -180,9 +194,9 @@ export default function AdminPage() {
     if (!data) return;
     const newTestimony: Testimonial = {
       id: `test-${Date.now()}`,
-      clientName: "NEW CLIENT",
-      company: "Company Name",
-      feedback: "Enter their feedback or review here."
+      clientName: "CLIENT",
+      company: "Company",
+      feedback: "Feedback here."
     };
     setData({ ...data, testimonials: [...(data.testimonials || []), newTestimony] });
   };
@@ -200,11 +214,10 @@ export default function AdminPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-industrial-50/50 cad-grid-bg p-4">
+      <div className="min-h-screen flex items-center justify-center bg-industrial-50/50 p-4">
         <div className="w-full max-w-sm bg-white border border-industrial-300 p-6 rounded-lg shadow-md">
           <div className="font-technical text-[10px] text-industrial-400 uppercase tracking-widest border-b border-industrial-200 pb-3 mb-6 flex items-center">
-            <Lock className="w-4 h-4 mr-2 text-primary" />
-            ADMINISTRATOR_LOGON
+            <Lock className="w-4 h-4 mr-2 text-primary" /> ADMINISTRATOR_LOGON
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
@@ -212,24 +225,22 @@ export default function AdminPage() {
               <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2.5 font-technical text-xs bg-industrial-50 border border-industrial-200 rounded text-center" placeholder="••••••••••••••" />
             </div>
             {loginError && <p className="font-technical text-[10px] text-red-500 uppercase text-center">** {loginError} **</p>}
-            <button type="submit" className="w-full font-technical text-xs font-bold tracking-wider bg-primary hover:bg-primary-light text-white p-2.5 rounded">AUTHENTICATE_SYSTEM</button>
+            <button type="submit" className="w-full font-technical text-xs font-bold bg-primary hover:bg-primary-light text-white p-2.5 rounded">AUTHENTICATE_SYSTEM</button>
           </form>
         </div>
       </div>
     );
   }
 
-  if (!data) {
-    return <div className="min-h-screen flex items-center justify-center font-technical text-xs text-industrial-400">LOADING_SYSTEM_CONFIGURATION_DATA...</div>;
-  }
+  if (!data) return <div className="min-h-screen flex items-center justify-center font-technical text-xs text-industrial-400">LOADING_SYSTEM_CONFIGURATION_DATA...</div>;
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      <section className="border-b border-industrial-200 py-6 bg-industrial-50/30 cad-grid-bg">
+      <section className="border-b border-industrial-200 py-6 bg-industrial-50/30">
         <div className="max-w-4xl mx-auto px-4 flex justify-between items-center">
           <div>
-            <span className="font-technical text-[10px] text-primary uppercase tracking-widest font-bold">// CONTROL_PANEL</span>
-            <h1 className="font-authoritative text-2xl font-bold text-industrial-900 tracking-tight">CMS Configuration Editor</h1>
+            <span className="font-technical text-[10px] text-primary uppercase font-bold">// CONTROL_PANEL</span>
+            <h1 className="font-authoritative text-2xl font-bold text-industrial-900">CMS Configuration Editor</h1>
           </div>
           <button onClick={handleLogout} className="font-technical text-xs border border-industrial-300 hover:text-red-500 px-3 py-1.5 rounded flex items-center bg-white"><LogOut className="w-3.5 h-3.5 mr-1" />DISCONNECT</button>
         </div>
@@ -240,7 +251,7 @@ export default function AdminPage() {
           <span className="font-technical text-[10px] text-industrial-500">* Verify modifications before executing system save.</span>
           <div className="flex items-center space-x-4">
             {saveMessage && <span className="font-technical text-[10px] text-primary-light font-bold">{saveMessage}</span>}
-            <button onClick={handleSave} disabled={isSaving} className="font-technical text-xs font-bold bg-primary hover:bg-primary-light text-white px-5 py-2.5 rounded flex items-center"><Save className="w-4 h-4 mr-2" />{isSaving ? "SAVING..." : "SAVE CONFIGURATION"}</button>
+            <button onClick={handleSave} disabled={isSaving} className="font-technical text-xs font-bold bg-primary text-white px-5 py-2.5 rounded flex items-center"><Save className="w-4 h-4 mr-2" />{isSaving ? "SAVING..." : "SAVE CONFIGURATION"}</button>
           </div>
         </div>
 
@@ -320,7 +331,15 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div><label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">DWG</label><input type="text" value={project.dwg} onChange={(e) => handleProjectChange(idx, "dwg", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-technical text-xs" /></div>
                   <div><label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Scale</label><input type="text" value={project.scale} onChange={(e) => handleProjectChange(idx, "scale", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-technical text-xs" /></div>
-                  <div><label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Image</label><input type="text" value={project.image} onChange={(e) => handleProjectChange(idx, "image", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-technical text-xs" /></div>
+                  
+                  {/* NEW FILE UPLOAD BLOCK */}
+                  <div>
+                    <label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Image Upload</label>
+                    <input type="file" accept="image/*" onChange={(e) => handleImageUpload(idx, e)} className="w-full text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-technical file:bg-industrial-200 file:text-industrial-700 hover:file:bg-industrial-300" />
+                    {uploadingIndex === idx && <span className="text-[10px] text-primary font-bold mt-1 block">UPLOADING...</span>}
+                    {project.image && <span className="text-[9px] text-industrial-400 block mt-1 truncate" title={project.image}>Current: {project.image}</span>}
+                  </div>
+
                 </div>
                 <div><label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Description</label><textarea rows={3} value={project.description} onChange={(e) => handleProjectChange(idx, "description", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-sans text-xs" /></div>
               </div>
@@ -328,16 +347,13 @@ export default function AdminPage() {
           </div>
         </section>
 
-        {/* --- NEW SECTION: TESTIMONIALS --- */}
         <section className="border border-industrial-200 rounded-lg p-5 space-y-4">
           <div className="flex justify-between items-center border-b border-industrial-100 pb-2">
             <h3 className="font-technical text-xs font-bold text-primary tracking-widest uppercase">// 5. CLIENT TESTIMONIALS</h3>
             <button onClick={addTestimonial} className="font-technical text-[10px] text-primary flex items-center bg-white border border-industrial-200 px-2.5 py-1 rounded"><Plus className="w-3.5 h-3.5 mr-1" />ADD TESTIMONY</button>
           </div>
           <div className="space-y-6 divide-y divide-industrial-200">
-            {(data.testimonials || []).length === 0 && (
-              <p className="font-technical text-xs text-industrial-400 py-2">NO TESTIMONIALS ADDED YET.</p>
-            )}
+            {(data.testimonials || []).length === 0 && <p className="font-technical text-xs text-industrial-400 py-2">NO TESTIMONIALS ADDED YET.</p>}
             {(data.testimonials || []).map((testimony, idx) => (
               <div key={testimony.id} className="pt-4 first:pt-0 space-y-4 relative">
                 <div className="flex justify-between items-center mb-2">
@@ -345,19 +361,10 @@ export default function AdminPage() {
                   <button onClick={() => removeTestimonial(idx)} className="text-industrial-400 hover:text-red-500 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Client Name</label>
-                    <input type="text" value={testimony.clientName} onChange={(e) => handleTestimonialChange(idx, "clientName", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-technical text-xs" />
-                  </div>
-                  <div>
-                    <label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Company</label>
-                    <input type="text" value={testimony.company} onChange={(e) => handleTestimonialChange(idx, "company", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-technical text-xs" />
-                  </div>
+                  <div><label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Client Name</label><input type="text" value={testimony.clientName} onChange={(e) => handleTestimonialChange(idx, "clientName", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-technical text-xs" /></div>
+                  <div><label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Company</label><input type="text" value={testimony.company} onChange={(e) => handleTestimonialChange(idx, "company", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-technical text-xs" /></div>
                 </div>
-                <div>
-                  <label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Feedback / Review</label>
-                  <textarea rows={2} value={testimony.feedback} onChange={(e) => handleTestimonialChange(idx, "feedback", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-sans text-xs" />
-                </div>
+                <div><label className="block font-technical text-[9px] text-industrial-400 uppercase mb-1">Feedback / Review</label><textarea rows={2} value={testimony.feedback} onChange={(e) => handleTestimonialChange(idx, "feedback", e.target.value)} className="w-full p-2 border border-industrial-200 rounded font-sans text-xs" /></div>
               </div>
             ))}
           </div>

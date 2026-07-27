@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import localData from './portfolio-data.json';
 
 const firebaseConfig = {
@@ -11,7 +12,6 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Helper to check if Firebase is configured
 const isFirebaseConfigured = () => {
   return !!(
     process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
@@ -20,11 +20,13 @@ const isFirebaseConfigured = () => {
 };
 
 let db: any = null;
+let storage: any = null;
 
 if (isFirebaseConfigured()) {
   try {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
     db = getFirestore(app);
+    storage = getStorage(app);
   } catch (error) {
     console.error('Firebase initialization error:', error);
   }
@@ -75,7 +77,7 @@ export interface Contact {
   title: string;
   description: string;
   email: string;
-  phone: string; // <-- This is the newly added line!
+  phone: string;
   location: string;
 }
 
@@ -104,15 +106,13 @@ export async function getPortfolioData(): Promise<PortfolioData> {
       if (docSnap.exists()) {
         return docSnap.data() as PortfolioData;
       } else {
-        // Document doesn't exist, let's seed it with localData
         await setDoc(docRef, localData);
         return localData as PortfolioData;
       }
     } catch (error) {
-      console.error('Error fetching from Firestore, falling back to local JSON:', error);
+      console.error('Error fetching from Firestore:', error);
     }
   }
-  // Fallback to local JSON
   return localData as PortfolioData;
 }
 
@@ -127,7 +127,6 @@ export async function savePortfolioData(data: PortfolioData): Promise<boolean> {
       return false;
     }
   }
-  console.warn('Firebase not configured. Save ignored.');
   return false;
 }
 
@@ -136,7 +135,6 @@ export const getAboutData = async () => {
     try {
       const docRef = doc(db, "content", "about");
       const docSnap = await getDoc(docRef);
-      
       if (docSnap.exists()) {
         return docSnap.data().text;
       } else {
@@ -163,3 +161,18 @@ export const saveAboutData = async (text: string): Promise<boolean> => {
   }
   return false;
 };
+
+export async function uploadImage(file: File, path: string): Promise<string | null> {
+  if (!storage) {
+    console.error("Firebase Storage is not initialized.");
+    return null;
+  }
+  try {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    return null;
+  }
+}

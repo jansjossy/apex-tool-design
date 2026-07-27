@@ -36,7 +36,7 @@ export default function Header() {
           <Link href="/" className="flex items-center space-x-2.5 group">
             <img 
               src="/apexdesign.jpeg" 
-              alt="Apex Tool Design Logo" 
+              alt="APEX TOOL Design Logo" 
               className="w-8 h-8 object-contain transition-transform group-hover:scale-105 duration-300" 
             />
             <span className="font-technical text-sm font-black tracking-wider text-industrial-900">

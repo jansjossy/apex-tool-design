@@ -75,7 +75,7 @@ export default function ContactPage() {
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
-          from_name: "Apex Tool Design Website",
+          from_name: "APEX TOOL Design Website",
         }),
       });
 

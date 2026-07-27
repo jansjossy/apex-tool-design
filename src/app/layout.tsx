@@ -24,7 +24,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "Apex Tool Design | Precision Mould & Product Engineering",
+  title: "APEX TOOL Design | Precision Mould & Product Engineering",
   description:
     "Premium CAD & product design portfolio of Ditty Thomas, specializing in high-tolerance injection moulds, runner optimization, and cooling layouts.",
 };

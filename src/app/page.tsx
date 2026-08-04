@@ -68,11 +68,11 @@ export default async function Home() {
       </section>
 
       <main className="max-w-4xl mx-auto px-4 py-16 space-y-20">
-        {/* 2. SOFTWARE PROFICIENCY BADGES */}
+       {/* 2. SOFTWARE PROFICIENCY BADGES */}
+        {/* 
         <section className="w-full">
           <div className="border border-industrial-200 bg-industrial-50/50 p-6 rounded-lg tech-corner-tl tech-corner-tr tech-corner-bl tech-corner-br relative">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-center justify-center divide-y sm:divide-y-0 sm:divide-x divide-industrial-200">
-              {/* Badge 1: Siemens NX */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-primary/50 transition-colors shadow-sm mb-2">
                   <img src="/assets/1.jpeg" alt="Unigraphics NX" className="w-10 h-10 object-contain" />
@@ -81,7 +81,6 @@ export default async function Home() {
                 <span className="font-technical text-[9px] text-industrial-400 mt-0.5">3D modeling and assembly</span>
               </div>
 
-              {/* Badge 2: SolidWorks */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-red-500/50 transition-colors shadow-sm mb-2">
                   <img src="/assets/2.jpeg" alt="SolidWorks" className="w-10 h-10 object-contain" />
@@ -90,7 +89,6 @@ export default async function Home() {
                 <span className="font-technical text-[9px] text-industrial-400 mt-0.5">3D modeling and assembly</span>
               </div>
 
-              {/* Badge 3: AutoCAD */}
               <div className="flex flex-col items-center p-3 group">
                 <div className="w-14 h-14 flex items-center justify-center rounded border border-industrial-200 bg-white group-hover:border-amber-600/50 transition-colors shadow-sm mb-2">
                   <img src="/assets/3.jpeg" alt="AutoCAD" className="w-10 h-10 object-contain" />
@@ -101,6 +99,7 @@ export default async function Home() {
             </div>
           </div>
         </section>
+        */}
 
         {/* 3. PROFILE / HIGHLIGHTS SECTION */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
@@ -178,7 +177,7 @@ export default async function Home() {
                   FEATURED WORK // ARCHIVE_01
                 </span>
                 <h2 className="font-authoritative text-2xl font-bold text-industrial-900 mt-1">
-                  PVC / Multi-Cavity Mould Design
+                  Few Of Our Projects
                 </h2>
               </div>
               <Link

@@ -104,9 +104,7 @@ export default async function Home() {
         {/* 3. PROFILE / HIGHLIGHTS SECTION */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
           <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-industrial-200 pb-6 md:pb-0 md:pr-8">
-            <span className="font-technical text-[10px] text-industrial-400 uppercase tracking-widest">
-              DOC_NO: {data.profile.dwgNo}
-            </span>
+            
             <h2 className="font-authoritative text-2xl font-bold text-industrial-900 tracking-tight mt-1 mb-4">
               {data.profile.title}
             </h2>

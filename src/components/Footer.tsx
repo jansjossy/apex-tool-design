@@ -38,9 +38,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="text-[10px] font-technical text-industrial-400 bg-industrial-50 border border-industrial-200 px-3 py-1.5 rounded">
-            SYS_REF: APX_DSGN_2026 // LOC: 9.5916° N, 76.5222° E
-          </div>
+          
         </div>
       </div>
     </footer>

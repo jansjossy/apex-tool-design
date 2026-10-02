@@ -1,214 +1,128 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Mail, MapPin, Copy, Check, Send, Terminal, Phone, Loader2 } from "lucide-react";
-import { getPortfolioData, PortfolioData } from "@/lib/db";
+import React, { useState } from "react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// IMPORTANT: Update this import path to point to your initialized Firebase file
+import { db, storage } from "@/lib/firebase"; 
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  
-  const [copiedEmail, setCopiedEmail] = useState(false);
-  const [copiedPhone, setCopiedPhone] = useState(false);
-  const [data, setData] = useState<PortfolioData | null>(null);
-  
-  // New States for the API Form
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
 
-  useEffect(() => {
-    const loadData = async () => {
-      const fetchedData = await getPortfolioData();
-      setData(fetchedData);
-    };
-    loadData();
-  }, []);
-
-  const emailAddress = data?.contact?.email || "yourtooldesigner@gmail.com";
-  const phoneNumber = data?.contact?.phone || "Update number in admin";
-
-  const handleCopyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(emailAddress);
-      setCopiedEmail(true);
-      setTimeout(() => setCopiedEmail(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy email:", err);
-    }
-  };
-
-  const handleCopyPhone = async () => {
-    try {
-      await navigator.clipboard.writeText(phoneNumber);
-      setCopiedPhone(true);
-      setTimeout(() => setCopiedPhone(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy phone:", err);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // The new Web3Forms Submission Handler
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const subject = formData.get("subject") as string;
+    const message = formData.get("message") as string;
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: "ac16c5ab-d682-4950-946e-9cdc67f585af", // <-- PASTE YOUR KEY HERE
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          from_name: "APEX TOOL Design Website",
-        }),
+      let attachmentUrl = "";
+      let attachmentName = "";
+
+      // 1. Upload attachment to Firebase Storage if a file was selected
+      if (file) {
+        attachmentName = file.name;
+        const storageRef = ref(storage, `inquiry_attachments/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        attachmentUrl = await getDownloadURL(snapshot.ref);
+      }
+
+      // 2. Write to Firestore (this triggers your Cloud Function to send the email)
+      await addDoc(collection(db, "inquiries"), {
+        name,
+        email,
+        subject,
+        message,
+        attachmentUrl,
+        attachmentName,
+        createdAt: serverTimestamp(),
       });
 
-      const result = await response.json();
-      
-      if (result.success) {
-        setSubmitStatus("success");
-        setFormData({ name: "", email: "", subject: "", message: "" }); // Clear form
-        setTimeout(() => setSubmitStatus("idle"), 5000);
-      } else {
-        setSubmitStatus("error");
-      }
-    } catch (error) {
-      console.error("Form submission error:", error);
-      setSubmitStatus("error");
+      alert("INQUIRY TRANSMITTED SUCCESSFULLY.");
+      form.reset();
+      setFile(null);
+    } catch (err) {
+      console.error("Transmission error:", err);
+      alert("TRANSMISSION FAILED. CHECK CONSOLE LOGS.");
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Page Header */}
-      <section className="border-b border-industrial-200 py-12 bg-industrial-50/30 cad-grid-bg">
-        <div className="max-w-4xl mx-auto px-4">
-          <span className="font-technical text-[10px] text-primary uppercase tracking-widest font-bold">
-            // COM_LINK // EST_REQUESTS
-          </span>
-          <h1 className="font-authoritative text-3xl sm:text-4xl font-extrabold text-industrial-900 tracking-tight mt-1 mb-2">
-            Establish Contact
-          </h1>
-          <p className="font-technical text-xs text-industrial-500 uppercase tracking-widest">
-            Send briefs, concepts, drawings, or request quotes
-          </p>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-start">
-          {/* Left panel */}
-          <div className="md:col-span-2 space-y-8">
-            <h2 className="font-authoritative text-2xl font-bold text-industrial-900 mb-3">
-              Let&apos;s build your next tool together
-            </h2>
-            <div className="space-y-4 font-technical text-xs">
-              
-              {/* EMAIL BLOCK */}
-              <div className="border border-industrial-200 rounded p-4 flex items-center justify-between bg-industrial-50/50">
-                <div className="flex items-center space-x-3">
-                  <Mail className="w-5 h-5 text-primary" />
-                  <div>
-                    <span className="text-[9px] text-industrial-400 block uppercase">EMAIL_DIRECT:</span>
-                    <span className="font-bold text-industrial-800">{emailAddress}</span>
-                  </div>
-                </div>
-                <button
-                  onClick={handleCopyEmail}
-                  className="text-industrial-400 hover:text-primary p-1 bg-white border border-industrial-200 rounded transition-colors shadow-sm"
-                >
-                  {copiedEmail ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-
-              {/* MOBILE BLOCK */}
-              <div className="border border-industrial-200 rounded p-4 flex items-center justify-between bg-industrial-50/50">
-                <div className="flex items-center space-x-3">
-                  <Phone className="w-5 h-5 text-primary" />
-                  <div>
-                    <span className="text-[9px] text-industrial-400 block uppercase">MOBILE_DIRECT:</span>
-                    <span className="font-bold text-industrial-800">{phoneNumber}</span>
-                  </div>
-                </div>
-                <button
-                  onClick={handleCopyPhone}
-                  className="text-industrial-400 hover:text-primary p-1 bg-white border border-industrial-200 rounded transition-colors shadow-sm"
-                >
-                  {copiedPhone ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-
-            </div>
+    <div className="max-w-3xl mx-auto p-6 pt-16 font-mono">
+      <h1 className="text-2xl font-bold tracking-widest uppercase mb-10 border-b-2 border-black pb-4">
+        Contact / Send Inquiry
+      </h1>
+      
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col flex-1 gap-2">
+            <label className="text-xs uppercase tracking-wider font-semibold">Your Name</label>
+            <input 
+              type="text" 
+              name="name" 
+              required 
+              className="border-2 border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
+            />
           </div>
-
-          {/* Right panel: Contact Form */}
-          <div className="md:col-span-3">
-            <div className="border border-industrial-200 bg-white p-6 rounded-lg shadow-sm">
-              <div className="font-technical text-[10px] text-industrial-400 uppercase tracking-widest border-b border-industrial-200 pb-3 mb-6 flex items-center">
-                <Terminal className="w-3.5 h-3.5 mr-2 text-primary" />
-                TRANSMIT_INQUIRY_FORM
-              </div>
-
-              {/* Converted to a standard HTML Form */}
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input required type="text" name="name" value={formData.name} placeholder="YOUR NAME" onChange={handleChange} className="w-full p-2.5 font-technical text-xs bg-industrial-50 border border-industrial-200 rounded focus:border-primary focus:outline-none" />
-                <input required type="email" name="email" value={formData.email} placeholder="YOUR EMAIL" onChange={handleChange} className="w-full p-2.5 font-technical text-xs bg-industrial-50 border border-industrial-200 rounded focus:border-primary focus:outline-none" />
-                <input required type="text" name="subject" value={formData.subject} placeholder="SUBJECT" onChange={handleChange} className="w-full p-2.5 font-technical text-xs bg-industrial-50 border border-industrial-200 rounded focus:border-primary focus:outline-none" />
-                <textarea required name="message" value={formData.message} rows={5} placeholder="MESSAGE" onChange={handleChange} className="w-full p-2.5 font-technical text-xs bg-industrial-50 border border-industrial-200 rounded focus:border-primary focus:outline-none" />
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex items-center justify-center w-full font-technical text-xs font-bold tracking-wider bg-primary hover:bg-primary-light disabled:bg-industrial-300 text-white p-3 rounded transition-colors shadow-sm"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      TRANSMITTING...
-                    </>
-                  ) : (
-                    <>
-                      TRANSMIT INQUIRY
-                      <Send className="w-3.5 h-3.5 ml-2" />
-                    </>
-                  )}
-                </button>
-
-                {/* Status Messages */}
-                {submitStatus === "success" && (
-                  <p className="text-emerald-600 font-technical text-[10px] text-center uppercase tracking-widest mt-2">
-                    ✓ Inquiry transmitted successfully
-                  </p>
-                )}
-                {submitStatus === "error" && (
-                  <p className="text-red-500 font-technical text-[10px] text-center uppercase tracking-widest mt-2">
-                    ✗ Transmission failed. Please try again.
-                  </p>
-                )}
-              </form>
-            </div>
+          <div className="flex flex-col flex-1 gap-2">
+            <label className="text-xs uppercase tracking-wider font-semibold">Your Email</label>
+            <input 
+              type="email" 
+              name="email" 
+              required 
+              className="border-2 border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
+            />
           </div>
         </div>
-      </main>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-xs uppercase tracking-wider font-semibold">Subject</label>
+          <input 
+            type="text" 
+            name="subject" 
+            required 
+            className="border-2 border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-xs uppercase tracking-wider font-semibold">Message Details</label>
+          <textarea 
+            name="message" 
+            required 
+            rows={6} 
+            className="border-2 border-gray-300 p-3 text-sm focus:outline-none focus:border-black resize-none transition-colors"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2 p-6 border-2 border-dashed border-gray-300 bg-gray-50 mt-2">
+          <label className="text-xs uppercase tracking-wider font-bold">Attach File (Optional)</label>
+          <p className="text-[10px] text-gray-500 mb-2 uppercase">Supported: PDF, JPG, PNG, DWG, STEP</p>
+          <input
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png,.dwg,.step,.stp"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+            className="text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:bg-black file:text-white file:uppercase file:tracking-wider hover:file:bg-gray-800 cursor-pointer"
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="bg-black text-white p-4 text-sm font-bold uppercase tracking-widest mt-4 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          {loading ? "Transmitting..." : "Transmit Inquiry"}
+        </button>
+      </form>
     </div>
   );
 }

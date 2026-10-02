@@ -28,7 +28,7 @@ exports.sendInquiryEmail = onDocumentCreated(
     });
 
     const mailOptions = {
-      from: `"Apex Website Inquiry" <b9f24a001@smtp-brevo.com>`,
+      from: `"Apex Website Inquiry" <yourtooldesign@gmail.com>`,
       to: "yourtooldesign@gmail.com", // The owner's inbox
       replyTo: email,
       subject: `New Inquiry: ${subject || "Website Form"} - from ${name}`,

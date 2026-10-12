@@ -1,126 +1,153 @@
 "use client";
 
 import React, { useState } from "react";
+import { db, storage } from "@/lib/firebase"; // Adjust the import path if your file is in src/ or lib/
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-// IMPORTANT: Update this import path to point to your initialized Firebase file
-import { db, storage } from "@/lib/firebase"; 
 
 export default function ContactPage() {
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const subject = formData.get("subject") as string;
-    const message = formData.get("message") as string;
+    setIsSubmitting(true);
 
     try {
-      let attachmentUrl = "";
-      let attachmentName = "";
+      let fileUrl = "";
+      let fileName = "";
 
       // 1. Upload attachment to Firebase Storage if a file was selected
       if (file) {
-        attachmentName = file.name;
-        const storageRef = ref(storage, `inquiry_attachments/${Date.now()}_${file.name}`);
+        fileName = file.name;
+        const storageRef = ref(storage, `inquiries/${Date.now()}_${file.name}`);
         const snapshot = await uploadBytes(storageRef, file);
-        attachmentUrl = await getDownloadURL(snapshot.ref);
+        fileUrl = await getDownloadURL(snapshot.ref);
       }
 
-      // 2. Write to Firestore (this triggers your Cloud Function to send the email)
+      // 2. Save document to Firestore inquiries collection
       await addDoc(collection(db, "inquiries"), {
         name,
         email,
         subject,
         message,
-        attachmentUrl,
-        attachmentName,
+        attachmentUrl: fileUrl || null,
+        attachmentName: fileName || null,
         createdAt: serverTimestamp(),
       });
 
       alert("INQUIRY TRANSMITTED SUCCESSFULLY.");
-      form.reset();
+
+      // 3. Reset form fields
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
       setFile(null);
-    } catch (err) {
-      console.error("Transmission error:", err);
-      alert("TRANSMISSION FAILED. CHECK CONSOLE LOGS.");
+    } catch (error) {
+      console.error("Submission failed:", error);
+      alert("Failed to transmit inquiry. Please check the console for details.");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 pt-16 font-mono">
-      <h1 className="text-2xl font-bold tracking-widest uppercase mb-10 border-b-2 border-black pb-4">
-        Contact / Send Inquiry
-      </h1>
-      
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <div className="flex flex-col md:flex-row gap-6">
-          <div className="flex flex-col flex-1 gap-2">
-            <label className="text-xs uppercase tracking-wider font-semibold">Your Name</label>
-            <input 
-              type="text" 
-              name="name" 
-              required 
-              className="border-2 border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
-            />
-          </div>
-          <div className="flex flex-col flex-1 gap-2">
-            <label className="text-xs uppercase tracking-wider font-semibold">Your Email</label>
-            <input 
-              type="email" 
-              name="email" 
-              required 
-              className="border-2 border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
-            />
-          </div>
-        </div>
+    <div className="max-w-2xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">&gt;_ TRANSMIT_INQUIRY_FORM</h1>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-wider font-semibold">Subject</label>
-          <input 
-            type="text" 
-            name="subject" 
-            required 
-            className="border-2 border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
+      {/* --- RESTORED CONTACT INFO SECTION --- */}
+      <div className="mb-8 p-4 border rounded bg-transparent">
+        <h2 className="text-lg font-semibold mb-2">DIRECT CONTACT</h2>
+        <p className="text-sm mb-1">
+          <span className="font-bold">EMAIL: </span> 
+          <a href="mailto:yourtooldesign@gmail.com" className="text-blue-500 hover:underline">
+            yourtooldesign@gmail.com
+          </a>
+        </p>
+        <p className="text-sm">
+          <span className="font-bold">PHONE: </span> 
+          <a href="tel:+11234567890" className="text-blue-500 hover:underline">
+            +1 123 456 7890
+          </a>
+        </p>
+      </div>
+      {/* ------------------------------------- */}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold mb-1">YOUR NAME</label>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full border p-2 rounded bg-transparent"
+            placeholder="Jane Doe"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-wider font-semibold">Message Details</label>
-          <textarea 
-            name="message" 
-            required 
-            rows={6} 
-            className="border-2 border-gray-300 p-3 text-sm focus:outline-none focus:border-black resize-none transition-colors"
+        <div>
+          <label className="block text-sm font-semibold mb-1">YOUR EMAIL</label>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border p-2 rounded bg-transparent"
+            placeholder="name@example.com"
           />
         </div>
 
-        <div className="flex flex-col gap-2 p-6 border-2 border-dashed border-gray-300 bg-gray-50 mt-2">
-          <label className="text-xs uppercase tracking-wider font-bold">Attach File (Optional)</label>
-          <p className="text-[10px] text-gray-500 mb-2 uppercase">Supported: PDF, JPG, PNG, DWG, STEP</p>
+        <div>
+          <label className="block text-sm font-semibold mb-1">SUBJECT</label>
+          <input
+            type="text"
+            required
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="w-full border p-2 rounded bg-transparent"
+            placeholder="Project inquiry"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-1">MESSAGE</label>
+          <textarea
+            required
+            rows={5}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full border p-2 rounded bg-transparent"
+            placeholder="Details about your tooling or design requirements..."
+          />
+        </div>
+
+        <div className="border border-dashed p-4 rounded">
+          <label className="block text-sm font-semibold mb-1">
+            ATTACH FILE (OPTIONAL)
+          </label>
+          <p className="text-xs text-gray-500 mb-2">
+            SUPPORTED: PDF, JPG, PNG, DWG, STEP
+          </p>
           <input
             type="file"
             accept=".pdf,.jpg,.jpeg,.png,.dwg,.step,.stp"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
-            className="text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:bg-black file:text-white file:uppercase file:tracking-wider hover:file:bg-gray-800 cursor-pointer"
+            className="block text-sm"
           />
         </div>
 
-        <button 
-          type="submit" 
-          disabled={loading}
-          className="bg-black text-white p-4 text-sm font-bold uppercase tracking-widest mt-4 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full py-3 px-6 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          {loading ? "Transmitting..." : "Transmit Inquiry"}
+          {isSubmitting ? "TRANSMITTING..." : "TRANSMIT INQUIRY ➦"}
         </button>
       </form>
     </div>
